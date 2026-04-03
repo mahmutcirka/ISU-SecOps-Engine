@@ -1,4 +1,8 @@
-feather.replace();
+try {
+    if (typeof feather !== 'undefined') feather.replace();
+} catch (e) {
+    console.error('Feather icons error:', e);
+}
 
 const form = document.getElementById('dns-form');
 const loader = document.getElementById('loader');
@@ -9,6 +13,16 @@ const tabStandard = document.getElementById('tab-standard');
 const tabSecurity = document.getElementById('tab-security');
 const tabAxfr = document.getElementById('tab-axfr');
 const tabSubdomains = document.getElementById('tab-subdomains');
+
+// Create error container dynamically
+const errContainer = document.createElement('div');
+errContainer.style.color = '#ef4444';
+errContainer.style.background = 'rgba(239, 68, 68, 0.1)';
+errContainer.style.padding = '12px';
+errContainer.style.borderRadius = '8px';
+errContainer.style.marginBottom = '20px';
+errContainer.style.display = 'none';
+form.insertAdjacentElement('afterend', errContainer);
 
 // Tab Switching
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -25,8 +39,30 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const domain = document.getElementById('domain').value.trim();
-    const wordlist = document.getElementById('wordlist').value.trim();
+    errContainer.style.display = 'none';
+    
+    let rawDomain = document.getElementById('domain').value.trim();
+    // Sanitize domain (remove http://, https://, and paths)
+    try {
+        if (rawDomain.startsWith('http://') || rawDomain.startsWith('https://')) {
+            const url = new URL(rawDomain);
+            rawDomain = url.hostname;
+        } else if (rawDomain.includes('/')) {
+            rawDomain = rawDomain.split('/')[0];
+        }
+    } catch(e) {
+        // Fallback to simple replace
+        rawDomain = rawDomain.replace(/^https?:\/\//, '').split('/')[0];
+    }
+    
+    // Strip www. if user types it manually, to ensure DMARC/SPF lookups hit the root
+    if (rawDomain.startsWith('www.')) {
+        rawDomain = rawDomain.substring(4);
+    }
+    
+    const domain = rawDomain.trim();
+    
+    let wordlist = document.getElementById('wordlist').value.trim();
 
     if (!domain) return;
 
@@ -53,11 +89,13 @@ form.addEventListener('submit', async (e) => {
             renderResults(json.data);
             resultsContainer.classList.remove('hidden');
         } else {
-            alert("Error: " + (json.error || "Unknown error occurred"));
+            errContainer.textContent = "Error: " + (json.error || "Unknown error occurred on server.");
+            errContainer.style.display = 'block';
         }
 
     } catch (err) {
-        alert("Failed to connect to the server.");
+        errContainer.textContent = "Bağlantı hatası: Sunucu yanıt vermiyor. (cargo run -- server çalışıyor mu?)";
+        errContainer.style.display = 'block';
         console.error(err);
     } finally {
         submitBtn.disabled = false;
