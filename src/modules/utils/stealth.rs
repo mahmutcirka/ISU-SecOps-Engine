@@ -13,8 +13,26 @@ const USER_AGENTS: &[&str] = &[
     "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36",
 ];
 
+/// Havuzdaki gerçek tarayıcı kimliklerinden birini rastgele döndürür.
+/// Bu işlem, WAF ve Rate-limit engellerini aşmak için her HTTP isteğinde kullanılır.
 pub fn get_random_user_agent() -> String {
     let mut r = rand::rng();
     let idx = r.random_range(0..USER_AGENTS.len());
     USER_AGENTS[idx].to_string()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::collections::HashSet;
+
+    #[test]
+    fn test_random_user_agent_variability() {
+        let mut seen = HashSet::new();
+        // 50 denemede birden fazla farklı UA gelmesini bekleriz (rastgelelik testi)
+        for _ in 0..50 {
+            seen.insert(get_random_user_agent());
+        }
+        assert!(seen.len() > 1, "User-Agent havuzu tek düze çalışıyor!");
+    }
 }

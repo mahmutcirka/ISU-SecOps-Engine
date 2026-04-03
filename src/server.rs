@@ -1,6 +1,6 @@
 use crate::modules::pentest::dns::{self, DnsArgs, DnsResult};
 use axum::response::IntoResponse;
-use axum::{routing::post, Json, Router};
+use axum::{Json, Router, routing::post};
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 use tower_http::cors::{Any, CorsLayer};
