@@ -1,4 +1,4 @@
-# 🛰️ SecOps Engine v0.4.5
+# 🛰️ SecOps Engine v0.5.0
 ### *Advanced DNS Enumeration & Security Auditing Platform*
 
 ```text

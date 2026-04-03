@@ -2,8 +2,14 @@
 
 SecOps Engine gelişim serüvenine ait sürüm notları ve özellik güncellemeleri.
 
+## [v0.5.0] - 2026-04-03
+### 🏁 Final Release & Personalization
+- **Personalization:** Proje, **Mahmut Cırka** imzasıyla özelleştirildi (README, Footer).
+- **Branding:** ASCII Art logo eklendi ve görsel ağırlıklar temizlendi.
+- **Deployment:** Docker desteği (`Dockerfile`) ve GitHub Actions CI altyapısı eklendi.
+- **Cleanup:** Gereksiz geliştirme dosyaları temizlendi.
+
 ## [v0.4.0] - 2026-04-03
-### 🚀 Final Bug-Fix & Resilience Update
 - **DNS Resilience:** `hickory-resolver` yapılandırmasına sistem varsayılan DNS'i (`system_conf`) eklendi. Firewall kısıtlamalarını aşmak için OS-native resolver önceliklendirildi.
 - **Port Scanner Update:** TCP tarama timeout süresi 1500ms'den 2500ms'ye çıkarıldı. Daha güvenilir sonuçlar için asenkron havuz optimize edildi.
 - **Async Fixes:** Axum handler'larındaki `Send` trait uyuşmazlığı giderildi, asenkron yapıda `ThreadRng` tutulması önlendi.
