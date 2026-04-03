@@ -1,6 +1,0 @@
-www
-mail
-dev
-test
-staging
-vpn
