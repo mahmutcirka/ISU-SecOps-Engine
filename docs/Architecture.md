@@ -1,6 +1,6 @@
-# 🏛️ SecOps Engine: Architecture & Design
+# 🏛️ DNS Enumeration: Architecture & Design
 
-SecOps Engine, asenkron yapısı ve modüler tasarımı ile yüksek hızda güvenlik taraması yapmak üzere kurgulanmıştır.
+DNS Enumeration, asenkron yapısı ve modüler tasarımı ile yüksek hızda güvenlik taraması yapmak üzere kurgulanmıştır.
 
 ## ⚙️ Core Components
 

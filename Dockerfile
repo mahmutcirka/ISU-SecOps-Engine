@@ -15,11 +15,11 @@ RUN apt-get update && apt_get install -y ca-certificates && rm -rf /var/lib/apt/
 WORKDIR /app
 
 # Copy binary from builder
-COPY --from=builder /app/target/release/secops /app/secops
+COPY --from=builder /app/target/release/dns-enumeration /app/dns-enumeration
 # Copy public assets for web dashboard
 COPY --from=builder /app/public /app/public
 
 EXPOSE 3000
 
-ENTRYPOINT ["/app/secops"]
+ENTRYPOINT ["/app/dns-enumeration"]
 CMD ["server", "--port", "3000"]

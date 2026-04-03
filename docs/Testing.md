@@ -1,6 +1,6 @@
-# 🧪 SecOps Engine: Testing & Verification Guide
+# 🧪 DNS Enumeration: Testing & Verification Guide
 
-SecOps Engine, her geliştirme aşamasında sıkı test döngülerinden (`cargo test`, `clippy`, `fmt`) geçirilir.
+DNS Enumeration, her geliştirme aşamasında sıkı test döngülerinden (`cargo test`, `clippy`, `fmt`) geçirilir.
 
 ## 🧱 Unit & Integration Tests
 

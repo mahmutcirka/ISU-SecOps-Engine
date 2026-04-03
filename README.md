@@ -1,5 +1,5 @@
-# 🛰️ SecOps Engine v0.5.0
-### *Advanced DNS Enumeration & Security Auditing Platform*
+# 🛰️ DNS Enumeration v0.5.0
+### *Advanced DNS Scoping & Reconnaissance Platform*
 
 ```text
   ____                ___                    _____             _             
@@ -21,7 +21,7 @@
 
 ## 🛡️ Introduction
 
-**SecOps Engine**, siber güvenlik araştırmacıları ve pentest uzmanları için geliştirilmiş; yüksek performanslı, asenkron ve çok katmanlı bir istihbarat toplama aracıdır. Alan adlarını sadece listelemekle kalmaz, aynı zamanda WAF tespiti, S3 sızıntıları, DNS takibi ve port taraması yaparak kapsamlı bir risk haritası oluşturur.
+**DNS Enumeration**, siber güvenlik araştırmacıları ve pentest uzmanları için geliştirilmiş; yüksek performanslı, asenkron ve çok katmanlı bir istihbarat toplama aracıdır. Alan adlarını sadece listelemekle kalmaz, aynı zamanda WAF tespiti, S3 sızıntıları, DNS takibi ve port taraması yaparak kapsamlı bir risk haritası oluşturur.
 
 ## ✨ Key Features
 
@@ -42,7 +42,7 @@ graph TD
     User([User]) --> CLI[CLI Interface]
     User --> WEB[Web Dashboard]
     WEB --> API[Axum API Server]
-    CLI --> CORE[SecOps Core Engine]
+    CLI --> CORE[DNS Enumeration Core]
     API --> CORE
     CORE --> DNS[Stealth DNS Resolver]
     CORE --> SCAN[Async Port Scanner]
@@ -61,8 +61,8 @@ graph TD
 
 ### Build from source
 ```bash
-git clone https://github.com/mahmutcirka/ISU-SecOps-Engine.git
-cd ISU-SecOps-Engine
+git clone https://github.com/mahmutcirka/DNS-Enumeration.git
+cd DNS-Enumeration
 cargo build --release
 ```
 

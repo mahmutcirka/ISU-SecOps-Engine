@@ -1,4 +1,4 @@
-# Justfile - Command runner for Qicro development
+# Justfile - Command runner for DNS Enumeration development
 
 _default:
     @just --list

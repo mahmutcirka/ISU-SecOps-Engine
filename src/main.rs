@@ -1,10 +1,10 @@
 use clap::{Parser, Subcommand};
 use colored::*;
-use secops::modules::pentest::dns::{self, DnsArgs};
+use dns_enumeration::modules::pentest::dns::{self, DnsArgs};
 
 #[derive(Parser)]
-#[command(name = "secops")]
-#[command(about = "ISU SecOps Engine CLI", long_about = None)]
+#[command(name = "dns-enumeration")]
+#[command(about = "DNS Enumeration", long_about = None)]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -36,7 +36,7 @@ async fn main() -> anyhow::Result<()> {
 
     match cli.command {
         Commands::Server { port } => {
-            secops::server::start(port).await;
+            dns_enumeration::server::start(port).await;
         }
         Commands::Pentest { module } => match module {
             PentestModules::Dns(args) => {

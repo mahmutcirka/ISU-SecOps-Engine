@@ -1,6 +1,6 @@
-# 📜 Changelog: SecOps Engine
+# 📜 Changelog: DNS Enumeration
 
-SecOps Engine gelişim serüvenine ait sürüm notları ve özellik güncellemeleri.
+DNS Enumeration gelişim serüvenine ait sürüm notları ve özellik güncellemeleri.
 
 ## [v0.5.0] - 2026-04-03
 ### 🏁 Final Release & Personalization
