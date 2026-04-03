@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISU SecOps | DNS Enumeration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Feather icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+
+    <div class="background-effects">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <main class="container">
+        <header>
+            <div class="logo">
+                <i data-feather="shield"></i>
+                <h1>ISU-SecOps Engine</h1>
+            </div>
+            <p class="subtitle">Advanced DNS Enumeration & Security Analysis</p>
+        </header>
+
+        <section class="card form-container">
+            <form id="dns-form">
+                <div class="input-group">
+                    <label for="domain">Target Domain</label>
+                    <div class="input-wrapper">
+                        <i data-feather="globe"></i>
+                        <input type="text" id="domain" name="domain" placeholder="example.com" required autocomplete="off">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="wordlist">Wordlist <span>(Optional for brute-force)</span></label>
+                    <div class="input-wrapper">
+                        <i data-feather="list"></i>
+                        <input type="text" id="wordlist" name="wordlist" placeholder="test_words.txt" autocomplete="off">
+                    </div>
+                </div>
+
+                <button type="submit" id="submit-btn">
+                    <span>Enumerate Domain</span>
+                    <i data-feather="arrow-right"></i>
+                </button>
+            </form>
+        </section>
+
+        <!-- Loading State -->
+        <div id="loader" class="hidden">
+            <div class="spinner"></div>
+            <p>Analyzing DNS infrastructure...</p>
+        </div>
+
+        <!-- Results section -->
+        <section id="results-container" class="hidden">
+            <div class="tabs">
+                <button class="tab-btn active" data-target="#tab-standard">Standard Records</button>
+                <button class="tab-btn" data-target="#tab-security">Security Controls</button>
+                <button class="tab-btn" data-target="#tab-axfr">Zone Transfer</button>
+                <button class="tab-btn" data-target="#tab-subdomains">Subdomains</button>
+            </div>
+
+            <div class="tab-content window active" id="tab-standard"></div>
+            <div class="tab-content window" id="tab-security"></div>
+            <div class="tab-content window" id="tab-axfr"></div>
+            <div class="tab-content window" id="tab-subdomains"></div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
