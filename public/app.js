@@ -160,14 +160,55 @@ function renderResults(data) {
     }
 
     // 4. Subdomains
+    let subHtml = '';
+    if (data.osint_subdomains && data.osint_subdomains.length > 0) {
+        subHtml += `<h4 style="margin-bottom:12px; color:var(--info);">Passive OSINT (crt.sh)</h4>`;
+        subHtml += data.osint_subdomains.map(sub => `
+            <div class="record-row" style="padding: 8px 0;">
+                <span class="record-value" style="color: var(--text-primary); min-width: 150px;"><i data-feather="search" style="width:14px; height:14px; margin-right:8px; color:var(--text-secondary);"></i>${sub}</span>
+            </div>
+        `).join('');
+    }
+    
     if (data.subdomains && data.subdomains.length > 0) {
-        tabSubdomains.innerHTML = data.subdomains.map(sub => `
-            <div class="record-row">
+        subHtml += `<h4 style="margin-top:20px; margin-bottom:12px; color:var(--success);">Brute-Force Hits</h4>`;
+        subHtml += data.subdomains.map(sub => `
+            <div class="record-row" style="padding: 8px 0;">
                 <span class="record-value" style="color: var(--success); font-weight: 600; min-width: 150px;">${sub.subdomain}</span>
                 <span class="record-value" style="color: var(--text-secondary);">${sub.ips.join(', ')}</span>
             </div>
         `).join('');
-    } else {
-        tabSubdomains.innerHTML = `<div class="empty-state">No subdomains found or wordlist not provided.</div>`;
     }
+    
+    if (!subHtml) {
+        subHtml = `<div class="empty-state">No subdomains found or wordlist not provided.</div>`;
+    }
+    tabSubdomains.innerHTML = subHtml;
+
+    // 5. IP & Port Intel
+    const tabIpIntel = document.getElementById('tab-ipintel');
+    if (tabIpIntel) {
+        let intelHtml = '';
+        if (data.ip_intel && data.ip_intel.length > 0) {
+            intelHtml += `<h4 style="margin-bottom:12px; color:var(--info);">IP Intelligence / Whois</h4>`;
+            data.ip_intel.forEach(intel => {
+                intelHtml += `
+                    <div class="record-row" style="display:flex; justify-content:space-between;">
+                        <span style="font-weight:bold; color:var(--success)">${intel.ip}</span>
+                        <span style="color:var(--text-secondary)">${intel.country} / ${intel.network_name}</span>
+                    </div>
+                `;
+            });
+        }
+        if (data.open_ports && data.open_ports.length > 0) {
+            intelHtml += `<h4 style="margin-top:20px; margin-bottom:12px; color:var(--warning);">Open TCP Ports</h4><div style="display:flex; gap:10px; flex-wrap:wrap;">`;
+            data.open_ports.forEach(port => {
+                intelHtml += `<span class="badge warning" style="margin:0">${port.port}/TCP (${port.service})</span>`;
+            });
+            intelHtml += `</div>`;
+        }
+        tabIpIntel.innerHTML = intelHtml || `<div class="empty-state">No Intel data acquired.</div>`;
+    }
+    
+    feather.replace();
 }
