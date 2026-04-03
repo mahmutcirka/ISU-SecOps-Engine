@@ -86,8 +86,66 @@ form.addEventListener('submit', async (e) => {
         const json = await response.json();
 
         if (json.success && json.data) {
-            renderResults(json.data);
-            resultsContainer.classList.remove('hidden');
+            const data = json.data;
+            // Show results 
+            document.getElementById('results-container').classList.remove('hidden');
+            document.getElementById('dashboard-grid').classList.remove('hidden');
+
+            // --- 0. Dashboard Overview ---
+            const dashboardGrid = document.getElementById('dashboard-grid');
+            if (dashboardGrid) {
+                let subCount = data.subdomains ? data.subdomains.length : 0;
+                let pCount = data.open_ports ? data.open_ports.length : 0;
+                let vulnRatingText = "Safe";
+                let vulnClass = "green";
+                let vulnIcon = "check-circle";
+
+                let criticalVulns = 0;
+                if (data.takeover) data.takeover.forEach(t => { if (t.vulnerable) criticalVulns++; });
+                if (data.s3_buckets) data.s3_buckets.forEach(s => { if (s.is_critical) criticalVulns++; });
+
+                if (criticalVulns > 0) {
+                    vulnRatingText = `${criticalVulns} CRITICAL`;
+                    vulnClass = "red";
+                    vulnIcon = "alert-triangle";
+                }
+
+                let wafStatus = data.waf && !data.waf.includes("No active") ? data.waf : "Not Detected";
+                let wafClass = wafStatus === "Not Detected" ? "green" : "blue";
+
+                dashboardGrid.innerHTML = `
+                    <div class="metric-card">
+                        <div class="metric-icon purple"><i data-feather="globe"></i></div>
+                        <div class="metric-info">
+                            <h4>Subdomains</h4>
+                            <div class="value">${subCount}</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon blue"><i data-feather="terminal"></i></div>
+                        <div class="metric-info">
+                            <h4>Open Ports</h4>
+                            <div class="value">${pCount}</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon ${vulnClass}"><i data-feather="${vulnIcon}"></i></div>
+                        <div class="metric-info">
+                            <h4>Web Vulns</h4>
+                            <div class="value">${vulnRatingText}</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon ${wafClass}"><i data-feather="shield"></i></div>
+                        <div class="metric-info">
+                            <h4>Firewall</h4>
+                            <div class="value" style="font-size: 1.1rem;">${wafStatus}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderResults(data);
         } else {
             errContainer.textContent = "Error: " + (json.error || "Unknown error occurred on server.");
             errContainer.style.display = 'block';
