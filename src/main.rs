@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
-use secops::modules::pentest::dns::{self, DnsArgs};
 use colored::*;
+use secops::modules::pentest::dns::{self, DnsArgs};
 
 #[derive(Parser)]
 #[command(name = "secops")]

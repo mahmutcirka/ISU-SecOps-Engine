@@ -1,12 +1,10 @@
-use axum::{
-    routing::post,
-    Router, Json,
-};
+use crate::modules::pentest::dns::{self, DnsArgs, DnsResult};
+use axum::response::IntoResponse;
+use axum::{routing::post, Json, Router};
 use serde::{Deserialize, Serialize};
+use std::net::SocketAddr;
 use tower_http::cors::{Any, CorsLayer};
 use tower_http::services::ServeDir;
-use std::net::SocketAddr;
-use crate::modules::pentest::dns::{self, DnsArgs, DnsResult};
 
 #[derive(Deserialize)]
 pub struct EnumerateRequest {
@@ -21,6 +19,7 @@ pub struct EnumerateResponse {
     pub error: Option<String>,
 }
 
+/// API sunucusunu belirtilen port üzerinden başlatır.
 pub async fn start(port: u16) {
     let cors = CorsLayer::new()
         .allow_origin(Any)
@@ -39,7 +38,8 @@ pub async fn start(port: u16) {
     axum::serve(listener, app).await.unwrap();
 }
 
-async fn handle_enumerate(Json(payload): Json<EnumerateRequest>) -> Json<EnumerateResponse> {
+/// DNS tarama isteğini işleyen ana API handler fonksiyonu.
+async fn handle_enumerate(Json(payload): Json<EnumerateRequest>) -> impl IntoResponse {
     let args = DnsArgs {
         domain: payload.domain.clone(),
         wordlist: payload.wordlist,
