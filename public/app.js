@@ -209,6 +209,152 @@ function renderResults(data) {
         }
         tabIpIntel.innerHTML = intelHtml || `<div class="empty-state">No Intel data acquired.</div>`;
     }
+
+    // 6. Web Vulnerabilities (Phase 2)
+    const tabWebVulns = document.getElementById('tab-webvulns');
+    if (tabWebVulns) {
+        let vulnHtml = '';
+        
+        // WAF
+        if (data.waf) {
+            vulnHtml += `<h4 style="margin-bottom:8px; color:var(--info);">Web Application Firewall</h4>`;
+            let color = data.waf.includes("No active") ? "var(--text-secondary)" : "var(--error)";
+            vulnHtml += `<div class="record-row" style="color:${color};"><i data-feather="shield"></i> ${data.waf}</div>`;
+        }
+
+        // TLS
+        if (data.tls) {
+            vulnHtml += `<h4 style="margin-top:20px; margin-bottom:8px; color:var(--info);">TLS/SSL Baseline</h4>`;
+            let color = data.tls.supported ? "var(--success)" : "var(--error)";
+            vulnHtml += `<div class="record-row" style="color:${color};"><i data-feather="lock"></i> ${data.tls.message}</div>`;
+        }
+
+        // S3 Buckets
+        if (data.s3_buckets && data.s3_buckets.length > 0) {
+            vulnHtml += `<h4 style="margin-top:20px; margin-bottom:8px; color:var(--info);">S3 Cloud Leaks</h4>`;
+            data.s3_buckets.forEach(s3 => {
+                let color = s3.is_critical ? "var(--error)" : "var(--warning)";
+                vulnHtml += `<div class="record-row" style="color:${color}; justify-content:space-between; display:flex;">
+                    <span style="word-break:break-all;">${s3.bucket_url}</span>
+                    <span class="badge ${s3.is_critical ? 'error' : 'warning'}">${s3.status}</span>
+                </div>`;
+            });
+        }
+
+        // Subdomain Takeover
+        if (data.takeover && data.takeover.length > 0) {
+            vulnHtml += `<h4 style="margin-top:20px; margin-bottom:8px; color:var(--info);">Subdomain Takeover (CNAME)</h4>`;
+            data.takeover.forEach(t => {
+                let color = t.vulnerable ? "var(--error)" : "var(--success)";
+                vulnHtml += `<div class="record-row" style="color:${color}; justify-content:space-between; display:flex;">
+                    <span>${t.cname}</span>
+                    <span>${t.status}</span>
+                </div>`;
+            });
+        }
+
+        // Security Headers
+        if (data.headers && data.headers.length > 0) {
+            vulnHtml += `<h4 style="margin-top:20px; margin-bottom:8px; color:var(--info);">Security Headers</h4>`;
+            data.headers.forEach(h => {
+                let color = h.present ? "var(--success)" : "var(--error)";
+                vulnHtml += `<div class="record-row" style="justify-content:space-between; display:flex;">
+                    <span style="color:var(--text-primary);">${h.header}</span>
+                    <span style="color:${color}; font-size:12px;">${h.value}</span>
+                </div>`;
+            });
+        }
+        
+        tabWebVulns.innerHTML = vulnHtml || `<div class="empty-state">No vulnerabilities scanned yet.</div>`;
+    }
+
+    // 7. Topology Network Graph (Phase 3)
+    let container = document.getElementById('network-graph');
+    if (container && window.vis) {
+        let nodes = new vis.DataSet([]);
+        let edges = new vis.DataSet([]);
+        
+        let rootId = 'root';
+        nodes.add({ id: rootId, label: data.domain, group: 'domain', font: {color: 'white', size: 20} });
+
+        let ipNodes = new Set();
+        let firstIp = null;
+
+        if (data.standard_records) {
+            data.standard_records.forEach((rec, idx) => {
+                let recId = `rec_${idx}`;
+                if (rec.record_type === 'NS') {
+                    nodes.add({ id: recId, label: rec.value, group: 'ns', font: {color: '#b0bec5'} });
+                    edges.add({ from: rootId, to: recId, label: 'NS', font: {size: 10, align: 'middle'} });
+                } else if (rec.record_type === 'A' || rec.record_type === 'AAAA') {
+                    if (!ipNodes.has(rec.value)) {
+                        nodes.add({ id: `ip_${rec.value}`, label: rec.value, group: 'ip', font: {color: '#aed581'} });
+                        ipNodes.add(rec.value);
+                        edges.add({ from: rootId, to: `ip_${rec.value}`, label: rec.record_type, font: {size: 10} });
+                        if (!firstIp) firstIp = rec.value;
+                    }
+                }
+            });
+        }
+
+        if (data.subdomains) {
+            // Cap to 50 subdomains so physics engine doesn't stutter in browser
+            data.subdomains.slice(0, 50).forEach((sub, idx) => {
+                let subId = `sub_${idx}`;
+                nodes.add({ id: subId, label: sub.subdomain, group: 'subdomain', font: {color: '#64b5f6'} });
+                edges.add({ from: rootId, to: subId, color: {opacity: 0.3} });
+                
+                sub.ips.forEach(ip => {
+                    if (!ipNodes.has(ip)) {
+                        nodes.add({ id: `ip_${ip}`, label: ip, group: 'ip', font: {color: '#aed581'} });
+                        ipNodes.add(ip);
+                    }
+                    edges.add({ from: subId, to: `ip_${ip}`, color: {opacity: 0.2} });
+                });
+            });
+        }
+
+        if (data.open_ports && (firstIp || data.ip_intel)) {
+            let targetIpStr = firstIp;
+            if (!targetIpStr && data.ip_intel && data.ip_intel.length > 0) {
+                targetIpStr = data.ip_intel[0].ip;
+            }
+            if (targetIpStr) {
+                data.open_ports.forEach(port => {
+                    let portId = `port_${port.port}`;
+                    nodes.add({ id: portId, label: `${port.port}/TCP\n(${port.service})`, group: 'port', font: {color: '#ffb74d'} });
+                    edges.add({ from: `ip_${targetIpStr}`, to: portId, label: 'OPEN', color: {color: '#ff9800'}, font: {size:10, color: '#ffb74d'} });
+                });
+            }
+        }
+
+        var graphData = { nodes: nodes, edges: edges };
+        var options = {
+            nodes: { shape: 'dot', size: 16 },
+            groups: {
+                domain: { color: {background: '#d32f2f', border: '#b71c1c'} },
+                ns: { color: {background: '#455a64', border: '#263238'} },
+                ip: { color: {background: '#388e3c', border: '#1b5e20'} },
+                subdomain: { color: {background: '#1976d2', border: '#0d47a1'} },
+                port: { color: {background: '#f57c00', border: '#e65100'} }
+            },
+            edges: { color: '#ffffff33' },
+            physics: { solver: 'forceAtlas2Based', forceAtlas2Based: { gravitationalConstant: -26, centralGravity: 0.005, springLength: 230, springConstant: 0.18 } }
+        };
+        window.topologyNetwork = new vis.Network(container, graphData, options);
+    }
     
     feather.replace();
 }
+
+        // Add Tab switching observer inside updateUI or wait..
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const targetId = e.target.getAttribute('data-target');
+                if (targetId === '#tab-topology' && window.topologyNetwork) {
+                    setTimeout(() => {
+                        window.topologyNetwork.fit();
+                    }, 50);
+                }
+            });
+        });

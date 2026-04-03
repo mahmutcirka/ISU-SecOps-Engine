@@ -6,7 +6,7 @@
   
   [![Rust](https://img.shields.io/badge/Made%20with-Rust-black?style=for-the-badge&logo=rust&logoColor=white)](#)
   [![Axum](https://img.shields.io/badge/Powered%20by-Axum-blue?style=for-the-badge)](#)
-  [![Security](https://img.shields.io/badge/SecOps-v0.1.0-red?style=for-the-badge)](#)
+  [![Security](https://img.shields.io/badge/SecOps-v0.3.0-red?style=for-the-badge)](#)
   [![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)](#)
 
 </div>
@@ -21,11 +21,21 @@
 
 ## 🔥 Temel Özellikler (v0.1.0 Çekirdek Modülü)
 
-### 🌍 DNS Bilgi Toplama (Enumeration) Modülü
+### 🌍 DNS ve OSINT İstihbaratı
 * **Standart Kayıt Çözümlemesi:** Bir alan adının belkemiği olan tüm (A, AAAA, MX, NS, CNAME, TXT) kayıtlarını anında haritalandırır.
-* **Katı Güvenlik Kontrolleri:** Alan adının kimliğini sahteciliğe karşı denetler. Güvenlik politikalarının (SPF ve DMARC varlığı) ve DKIM seçicilerinin olup olmadığını analiz eder.
-* **Zone Transfer (AXFR) Sınaması:** Bulunan yetkili isim sunucularını (NS) doğrudan hedef alarak onlarla raw (ham) TCP üzerinden konuşur ve ölümcül olan "Tam DNS Aktarımı" zafiyetini (Zone Transfer/AXFR) denetler.
-* **Subdomain Brute-Force (Alt Alan Adı Keşfi):** `tokio::stream` altyapısında saniyede yüzlerce asenkron kaba-kuvvet atağı gerçekleştirerek gizli alt alan adlarını (örn: `test_words.txt` referansıyla) gün yüzüne çıkartır.
+* **Katı Güvenlik Kontrolleri:** Alan adının kimliğini sahteciliğe karşı denetler (SPF, DMARC, DKIM).
+* **Zone Transfer (AXFR) Sınaması:** Bulunan yetkili isim sunucularına (NS) doğrudan raw TCP üzerinden "Tam Alan Adı Aktarımı" zafiyeti testi uygular.
+* **Subdomain Brute-Force & Pasif Keşif (crt.sh):** `tokio::stream` altyapısıyla saniyede yüzlerce asenkron deneme yapar ve eş zamanlı olarak OSINT üzerinden gizli/unutulmuş tüm eski alt alan adlarını anında JSON API ile deşifre eder.
+* **Hızlı TCP Port & IP Analizi:** Bulunan IP'lere 15 kritik port için tokio destekli eşzamanlı ağ taraması yapar; Arka planda `arin.net` RDAP API'sine bağlanıp sunucunun sahipliğini ve ASN yapısını deşifre eder.
+
+### 🛡️ Web Zafiyetleri (Pentest Ağı)
+* **Subdomain Takeover:** Terk edilmiş CNAME kayıtlarını HTTP HEAD atarak GitHub Pages, AWS, Heroku gibi bulutlarda sahipsiz alan taraması yapar.
+* **WAF Tespiti:** SQLi test payload'u yollayıp aradaki Cloudflare, Akamai gibi Web Uygulama Güvenlik Duvarlarını ifşa eder.
+* **S3 Bucket Veri Sızıntısı:** Amazon S3 varyans testleriyle gizli klasörlerin (`ListBucketResult`) halka açıldığını anında tespit eder.
+* **Güvenlik Başlıkları & TLS:** TLS/SSL Sertifikası validasyonu yapar, sunucunun X-Frame-Options, CSP, HSTS gibi zırhlarını teker teker söker.
+
+### 🌌 Etkileşimli Ağ Haritalama (Topology Map)
+* Tüm arka plan istihbaratı asenkron işlendikten hemen sonra, ele geçirilen her IP, Alt alan adı (Subdomain), Açık Siber Port ve İsim Sunucusu zengin fizikli (Physics-engine) ve etkileşimli bir uzay ağında birbirine çarpışma algoritmalarıyla görselleştirilir. Hedef mimarinin haritası tamamen ekranda çizilir.
 
 ### 💻 Bütünleşik Özel Web Arayüzü
 * Derlemeye veya kurulum sihirbazlarına (Vite/Node) ihtiyaç duymadan, saf (Vanilla) JS ve muazzam fütüristik CSS özellikleriyle tasarlanmış **Karanlık Mod (Dark Mode)** destekli web ekranı.

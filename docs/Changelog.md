@@ -2,7 +2,24 @@
 
 Projeyle ilgili tüm dikkate değer güncellemeler ve değişiklikler bu dosyada belgelenecektir.
 
-Bu dosya yapısı [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) sistemini temel almakta olup proje [Semantik Sürümleme (Semantic Versioning)](https://semver.org/spec/v2.0.0.html) yaklaşımını benimsemektedir.
+## [v0.3.0] - Görsel Network Haritası (Final Zirve Sürüm)
+**Yayınlanma Tarihi:** 2026-04-03
+
+### Eklenenler (Faz 3 Zirve Mimarisi)
+- **Topoloji Haritası (Topology Map)**: Çıkarılan tüm zafiyet ve DNS istihbaratını uzay geometrisinde görselleştiren (vis-network.js) etkileşimli yeni sekme eklendi. Ana domain merkezde olacak şekilde; NS sunucuları, Web Sunucu IP'leri, Keşfedilen Portlar ve Alt alan adları birbiriyle örümcek ağı mantığında Physics (Fizik) tabanlı animasyonlarla bağlandı.
+
+## [v0.2.0] - İleri İstihbarat ve Web Zafiyet Ağları
+**Yayınlanma Tarihi:** 2026-04-03
+
+### Eklenenler (Faz 1 & Faz 2 Ortak Özellik Pakedi)
+- **Hızlı Asenkron TCP Port Tarayıcı**: Bulunan A kayıtlarındaki IP'leri `tokio::net` üzerinden saniyeler içinde zafiyet/port taramasından geçirir.
+- **Pasif OSINT Araştırması**: Kaba kuvvete gerek kalmadan `crt.sh` üzerinden hedefin tüm Sertifika Şeffaflık Loglarını çıkarır.
+- **IP / ASN / Whois İstihbaratı**: `reqwest` ile Amerikan RDAP API'lerine çıkılarak bulut sunucularının tespiti.
+- **Subdomain Takeover**: CNAME kalıntıları için AWS S3, GitHub Pages, Fastly ve Heroku takeover zafiyet tespiti eklendi.
+- **Web Güvenlik Duvarı (WAF) Tespiti**: Zararsız SQLi Patternleri fırlatılarak trafiği dinleyen Cloudflare/Akamai bariyerlerinin haritası çıkarıldı.
+- **AWS S3 Bucket Zafiyet Okuyucusu**: Halka açık bırakılan kurumsal cloud depolama sızıntıları için test modülü eklendi.
+- **TLS & Security Headers (Savunma Katmanları)**: HSTS, CSP ve diğer güvenlik bariyerlerini analiz edip zayıf SSL/TLS yapılandırmalarını denetler.
+- **Yepyeni UI Sekmeleri**: Tamamı Vanilla JS ile yazılan Frontend'e yeni "IP & Ports" ve "Web Vulns" sekmeleri eklendi, veri görselleştirme dinamiği bir üst seviyeye taşındı.
 
 ## [v0.1.0] - İlk Çekirdek Motor Sürümü
 **Yayınlanma Tarihi:** 2026-04-03
