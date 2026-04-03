@@ -1,29 +1,43 @@
-# Mimari: ISU-SecOps-Engine
+# 🏛️ SecOps Engine: Architecture & Design
 
-## Sisteme Genel Bakış
-`ISU-SecOps-Engine`, tamamı Rust ile yazılmış yüksek performanslı ve asenkron bir Siber Güvenlik Operasyon (SecOps) platformudur. İçerdiği Web Arayüzünü (UI) kendi içinde barındıran ve aynı anda çok iş parçacıklı (multi-threaded) hızlı sızma testi (pentest) süreçlerini yürütebilen tek parça (single-binary) bir mimari üzerine kuruludur.
+SecOps Engine, asenkron yapısı ve modüler tasarımı ile yüksek hızda güvenlik taraması yapmak üzere kurgulanmıştır.
 
-Şu anki çekirdek katman, derinlemesine DNS Bilgi Toplama (Enumeration) ve Güvenlik Analizi üzerine odaklanmaktadır.
+## ⚙️ Core Components
 
-## Temel Teknoloji Yığını
-- **Arka Uç (Backend) Dili:** Rust (v1.85+)
-- **Asenkron Çalışma Zamanı:** `tokio`
-- **Web API & Statik Sunucu:** `axum` ve `tower-http` (Node.js bağımlılığı kesinlikle yoktur)
-- **DNS Protokol Motoru:** `hickory-resolver` & `hickory-client` (Doğrudan (Native) DNS yığını)
+### 🕵️ OSINT & Discovery Layer
+- **crt.sh Entegrasyonu:** Public sertifika şeffaflık loglarını kullanarak pasif subdomain keşfi yapar.
+- **Enumeration Engine:** Dahili wordlist veya kullanıcıdan gelen wordlist ile senkronize brute-force yapar.
 
-## Klasör & Modül Yapısı
-- `/src/main.rs`: Komut satırı alt araçlarını (`clap` ile) ve motorun ön yüklemesini yöneten ana giriş noktası.
-- `/src/server.rs`: Axum Web sunucusu API uç noktalarını (`/api/dns/enumerate`) ve statik dosya sunumunu (`public/`) yönetir.
-- `/src/modules/pentest/dns.rs`: Şunların mutlak mantığını içerir:
-  - Standart Kayıt Çözümleme (A, AAAA, MX, NS, TXT, CNAME)
-  - Güvenlik Konfigürasyonları (SPF, DMARC, DKIM)
-  - Tokio görevleri üzerinde kilitlenerek (blocking) çalışan ham TCP Alan Adı Aktarımı (AXFR) denemeleri.
-  - Asenkron veri akış havuzlaması (`buffer_unordered`) kullanarak Alt Alan Adı (Subdomain) Keşfi.
-- `/public/`: Herhangi bir derleyiciye ihtiyaç duymadan, cam efekti (glassmorphism) estetiği barındıran ve son derece tepkisel çalışan Vanilla JavaScript & CSS ön ucunu barındırır.
-- `/.vscode/` & kök dizindeki `*.toml` dosyaları: Clippy kurallarını, format hizalama sınırlarını ve hata ayıklayıcı (debugger) yapılarını zorunlu kılan katı kurumsal geliştirici ortam konfigürasyonlarını depolar.
+### 🛡️ Stealth Resolver (DNS Rotation)
+Geleneksel tarayıcıların aksine, SecOps Engine her isteği farklı bir nameserver üzerinden geçirir:
+- **Nameservers:** Google (8.8.8.8), Cloudflare (1.1.1.1), Quad9 (9.9.9.9), OpenDNS (208.67.222.222).
+- **Fallback:** Firewall engellerini aşmak için sistemin kendi varsayılan DNS yapılandırması (OS-native) önceliklidir.
+- **Rotate & Jitter:** `hickory-resolver` üzerinden her sorgu rotasyona tabi tutulur ve aralara 10-50ms arası rastgele gecikmeler (jitter) eklenir.
 
-## Veri Akışı
-1. **Girdi:** Kullanıcı, HEDEF DOMAIN'i Web Arayüzü (`app.js`) veya Cargo CLI üzerinden sisteme iletir.
-2. **Kabul (`tokio` + `axum`):** İstek `/api/dns/enumerate` uç noktasına ulaşır ve `DnsArgs` yapısına dönüştürülür.
-3. **Çalıştırma (`dns.rs`):** Standart sorgular eşzamanlı olarak yürütülür. Subdomain (alt alan adı) keşfi sürecinde ise `futures::stream` tarafından yönetilen yüzlerce süper verimli asenkron tokio görevi oluşturulur.
-4. **Çıktı:** Kesin sınırlarla tiplendirilmiş bir `DnsResult` yükü `serde_json` ile serialize (JSON) edilir ve tekrar kullanıcı ara yüzüne yollanarak veriler dinamik DOM düğümlerine görsel olarak yansıtılır.
+### ⚡ Port Scanning Engine
+- **Asenkron TCP Scanner:** `tokio` kanalları ve `buffer_unordered` kullanarak aynı anda 20 portu paralel tarar.
+- **Optimized Timeouts:** 2.5 saniyelik dinamik timeout süresi ile bağlantı kararlılığı sağlanır.
+
+### 🧱 Vulnerability Analysis Layer
+- **S3 Bucket Checker:** Varyasyonel `reqwest` istekleri ile "Access Denied" veya "Open" durumlarını raporlar.
+- **CNAME Takeover Engine:** Subdomain devralma zafiyetlerini (gh-pages, s3 vb.) tespit eder.
+- **WAF Detection:** Zararsız fakat yaygın SQLi payloadları ile firewall yanıt paternlerini analiz eder.
+
+## 🌐 Web Architecture (Dashboard)
+
+- **Backend:** Axum (Rust) tabanlı yüksek performanslı HTTP API.
+- **Frontend:** Vanilla JS & CSS (Glassmorphism design).
+- **Visuals:** `vis-network.js` kullanılarak domain hiyerarşisi (A, AAAA, CNAME, Open Ports) bir topoloji haritasına dönüştürülür.
+
+```mermaid
+flowchart LR
+    A[Global Domain] --> B[Subdomains]
+    B --> C[IP Addresses]
+    C --> D[Open Ports]
+    C --> E[IP Intel/Geolocation]
+    B --> F[Vulnerabilities]
+```
+
+## 🔐 Security Standards
+- **Zero-Warning Policy:** Kod bazında `clippy` ve `fmt` uyarıları barındırılmaz.
+- **Robustness:** Tüm `async` fonksiyonlar `Send` trait uyumluluğuna sahip olup, timeout ve panic korumalıdır.

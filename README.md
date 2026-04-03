@@ -1,73 +1,106 @@
 <div align="center">
-  
-  # 🛡️ ISU-SecOps-Engine
-  
-  **Yeni Nesil, Asenkron ve Yüksek Performanslı Siber Güvenlik İstihbarat Platformu**
-  
-  [![Rust](https://img.shields.io/badge/Made%20with-Rust-black?style=for-the-badge&logo=rust&logoColor=white)](#)
-  [![Axum](https://img.shields.io/badge/Powered%20by-Axum-blue?style=for-the-badge)](#)
-  [![Security](https://img.shields.io/badge/SecOps-v0.3.0-red?style=for-the-badge)](#)
-  [![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)](#)
+
+![SecOps Engine Logo](file:///C:/Users/mahmu/.gemini/antigravity/brain/fd06c365-7d7a-4be5-8b5b-3e9c3ae1c848/secops_engine_logo_v2_1775256018096.png)
+
+# 🛰️ SecOps Engine v0.4.0
+### *Advanced DNS Enumeration & Security Auditing Platform*
+
+[![Rust](https://img.shields.io/badge/Language-Rust-orange.svg)](https://www.rust-lang.org/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-Production--Ready-success.svg)]()
+[![Security](https://img.shields.io/badge/Security-Stealth--Optimized-brightgreen.svg)]()
+
+[Features](#-key-features) • [Installation](#-installation) • [Architecture](#-architecture) • [Dashboard](#-web-dashboard) • [Legal](#-disclaimer)
 
 </div>
 
 ---
 
-> _"Saldırı yüzeyini saniyeler içinde analiz edin, güvenlik standartlarınızı endüstriyel sınırlar içinde tutun."_
+## 🛡️ Introduction
 
-**ISU-SecOps-Engine**, tamamıyla **Rust** ile geliştirilmiş, Node.js veya herhangi dış bir runtime ortamına bağımlı olmadan kendi içinde hem karmaşık **DNS Sızma Testi** algoritmalarını yürütebilen hem de kullanıcısına "Glassmorphism" (Cam efekti) tarzında göz kamaştırıcı bir **Web Arayüzü** sunabilen devasa bir siber operasyon motorudur.
+**SecOps Engine**, siber güvenlik araştırmacıları ve pentest uzmanları için geliştirilmiş; yüksek performanslı, asenkron ve çok katmanlı bir istihbarat toplama aracıdır. Alan adlarını sadece listelemekle kalmaz, aynı zamanda WAF tespiti, S3 sızıntıları, DNS takibi ve port taraması yaparak kapsamlı bir risk haritası oluşturur.
 
----
+## ✨ Key Features
 
-## 🔥 Temel Özellikler (v0.1.0 Çekirdek Modülü)
+- 🕵️ **Advanced OSINT:** `crt.sh` entegrasyonu ile pasif subdomain keşfi.
+- ⚡ **Asenkron Port Scanner:** En kritik TCP portlarını milisaniyeler içinde tarayan `tokio` destekli motor.
+- 🎭 **Stealth & Evasion:**
+  - **User-Agent Rotation:** Her istekte değişen tarayıcı kimlikleri.
+  - **DNS Resolver Rotation:** Google, Cloudflare, Quad9 ve OpenDNS arasında otomatik rotasyon.
+  - **Request Jitter:** Bloklanmayı önlemek için ayarlanabilir rastgele gecikmeler.
+- 🪣 **Cloud Leak Detection:** Amazon S3 kova (bucket) sızıntısı ve subdomain takeover (devralma) kontrolleri.
+- 🧱 **Firewall Awareness:** Web Uygulama Güvenlik Duvarı (WAF) tespiti ve güvenlik başlıkları analizi.
+- 📊 **Interactive Dashboard:** `vis-network.js` tabanlı topoloji haritası ve modern "Glassmorphism" UI.
 
-### 🌍 DNS ve OSINT İstihbaratı
-* **Standart Kayıt Çözümlemesi:** Bir alan adının belkemiği olan tüm (A, AAAA, MX, NS, CNAME, TXT) kayıtlarını anında haritalandırır.
-* **Katı Güvenlik Kontrolleri:** Alan adının kimliğini sahteciliğe karşı denetler (SPF, DMARC, DKIM).
-* **Zone Transfer (AXFR) Sınaması:** Bulunan yetkili isim sunucularına (NS) doğrudan raw TCP üzerinden "Tam Alan Adı Aktarımı" zafiyeti testi uygular.
-* **Subdomain Brute-Force & Pasif Keşif (crt.sh):** `tokio::stream` altyapısıyla saniyede yüzlerce asenkron deneme yapar ve eş zamanlı olarak OSINT üzerinden gizli/unutulmuş tüm eski alt alan adlarını anında JSON API ile deşifre eder.
-* **Hızlı TCP Port & IP Analizi:** Bulunan IP'lere 15 kritik port için tokio destekli eşzamanlı ağ taraması yapar; Arka planda `arin.net` RDAP API'sine bağlanıp sunucunun sahipliğini ve ASN yapısını deşifre eder.
+## 🏗️ Architecture
 
-### 🛡️ Web Zafiyetleri (Pentest Ağı)
-* **Subdomain Takeover:** Terk edilmiş CNAME kayıtlarını HTTP HEAD atarak GitHub Pages, AWS, Heroku gibi bulutlarda sahipsiz alan taraması yapar.
-* **WAF Tespiti:** SQLi test payload'u yollayıp aradaki Cloudflare, Akamai gibi Web Uygulama Güvenlik Duvarlarını ifşa eder.
-* **S3 Bucket Veri Sızıntısı:** Amazon S3 varyans testleriyle gizli klasörlerin (`ListBucketResult`) halka açıldığını anında tespit eder.
-* **Güvenlik Başlıkları & TLS:** TLS/SSL Sertifikası validasyonu yapar, sunucunun X-Frame-Options, CSP, HSTS gibi zırhlarını teker teker söker.
-
-### 🌌 Etkileşimli Ağ Haritalama (Topology Map)
-* Tüm arka plan istihbaratı asenkron işlendikten hemen sonra, ele geçirilen her IP, Alt alan adı (Subdomain), Açık Siber Port ve İsim Sunucusu zengin fizikli (Physics-engine) ve etkileşimli bir uzay ağında birbirine çarpışma algoritmalarıyla görselleştirilir. Hedef mimarinin haritası tamamen ekranda çizilir.
-
-### 💻 Bütünleşik Özel Web Arayüzü
-* Derlemeye veya kurulum sihirbazlarına (Vite/Node) ihtiyaç duymadan, saf (Vanilla) JS ve muazzam fütüristik CSS özellikleriyle tasarlanmış **Karanlık Mod (Dark Mode)** destekli web ekranı.
-* Hatalı link (URL/scheme vb.) denemelerinde bile arka planda hedefi kusursuzca süzerek (`www.` dahil) analizini yarım bırakmayan akıllı mimari.
-
----
-
-## ⚡ Hızlı Başlangıç
-
-Sistemi tek bir hareketle canlandırmak çok basit! Arka planı ve web ara yüzünü saniyeler içinde başlatmak için terminale şunu yazmanız yeterli:
-
-```bash
-cargo run -- server
+```mermaid
+graph TD
+    User([User]) --> CLI[CLI Interface]
+    User --> WEB[Web Dashboard]
+    WEB --> API[Axum API Server]
+    CLI --> CORE[SecOps Core Engine]
+    API --> CORE
+    CORE --> DNS[Stealth DNS Resolver]
+    CORE --> SCAN[Async Port Scanner]
+    CORE --> VULN[Vulnerability Modules]
+    VULN --> S3[S3/Takeover Checks]
+    VULN --> WAF[WAF Detection]
+    DNS --> Internet((Public DNS/Web))
+    SCAN --> Internet
 ```
 
-1. Hemen ardından tarayıcınızdan **[http://localhost:3000](http://localhost:3000)** adresine gidin.
-2. Hedef `domain` ve (opsiyonel olarak) kullanılacak `wordlist` dizinini forma girin. Herhangi bir kelime listesi girmezseniz sistem otomatik olarak kendi çekirdeğindeki listeyi ateşleyecektir!
+## 🛠️ Installation
 
-_(Not: Sadece lokal makinenizde CLI üzerinden tarama yapmak isterseniz alternatif olarak şu komutu da kullanabilirsiniz: `cargo run -- pentest dns <hedef_domain> --wordlist test_words.txt`)_
+### Prerequisites
+- [Rust](https://www.rust-lang.org/tools/install) (latest stable)
+- [Just](https://github.com/casey/just) (optional, for automation tasks)
+
+### Build from source
+```bash
+git clone https://github.com/youruser/ISU-SecOps-Engine.git
+cd ISU-SecOps-Engine
+cargo build --release
+```
+
+## 🚀 Usage
+
+### 💻 Command Line Interface
+```bash
+# DNS ve Güvenlik taraması yap
+cargo run -- pentest dns example.com
+
+# Özel bir wordlist ile brute-force yap
+cargo run -- pentest dns example.com --wordlist subdomains.txt
+```
+
+### 🌐 Web Dashboard (Modern UI)
+```bash
+# Sunucuyu başlat (Varsayılan Port: 3000)
+cargo run -- server --port 3000
+```
+Tarayıcıda `http://localhost:3000` adresine giderek etkileşimli analiz ekranına ulaşabilirsiniz.
 
 ---
 
-## 🏗️ Mimari & Kurumsal Standartlar
+## 📸 Web Dashboard Preview
 
-Bu proje, kod kalitesini mutlak surette **sıfır hataya** zorlayan katı VS Code kuralları, `Justfile` tabanlı otonom CI (Sürekli Entegrasyon) ve `cargo-deny` üzerinden tedarik zinciri güvenliği standartlarıyla donatılmıştır. 
+````carousel
+![Main Dashboard](file:///C:/Users/mahmu/.gemini/antigravity/brain/fd06c365-7d7a-4be5-8b5b-3e9c3ae1c848/premium_dashboard_ui_1775253798070.webp)
+<!-- slide -->
+![Topology Map](file:///C:/Users/mahmu/.gemini/antigravity/brain/fd06c365-7d7a-4be5-8b5b-3e9c3ae1c848/topology_map_scanme_1775253519832.png)
+<!-- slide -->
+![Critical Vulnerabilities](file:///C:/Users/mahmu/.gemini/antigravity/brain/fd06c365-7d7a-4be5-8b5b-3e9c3ae1c848/nmap_vulns_details_1775255383047.png)
+````
 
-Daha fazla teknik detaylı okuma yapmak isteyenler için özel dokümantasyon dosyalarımız:
-- 📂 [Mimari Detaylar (Architecture.md)](./docs/Architecture.md)
-- 🧪 [Test & CI Yönergeleri (Testing.md)](./docs/Testing.md)
-- 📜 [Geçmiş & Sürüm Notları (Changelog.md)](./docs/Changelog.md)
+---
+
+## ⚖️ Disclaimer
+
+> [!CAUTION]
+> Bu araç sadece **eğitim ve yasal penetrasyon testleri** amaçlıdır. İzin alınmayan sistemler üzerinde tarama yapmak yasal sonuçlar doğurabilir. Kullanıcı, yaptığı eylemlerden tamamen kendisi sorumludur.
 
 ---
 <div align="center">
-  <i>Burası sadece bir başlangıç. Motor yeni modüller (Port scanner, Passive DNS vb.) eklenerek durmaksızın büyüyecektir. Tüm modüller eklendikçe tıpkı Architecture ve Changelog klasörlerinde olduğu gibi <b>bu döküman da anlık olarak güncellenecektir!</b></i> 🏴‍☠️
+Built with 🦀 by ISU Security Team
 </div>

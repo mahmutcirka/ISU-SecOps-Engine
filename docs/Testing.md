@@ -1,25 +1,51 @@
-# Test ve CI Yönergeleri
+# 🧪 SecOps Engine: Testing & Verification Guide
 
-`ISU-SecOps-Engine` projesinde kod kalitesi, güvenlik ve kararlılık (stability) her zaman en yüksek önceliktir.
+SecOps Engine, her geliştirme aşamasında sıkı test döngülerinden (`cargo test`, `clippy`, `fmt`) geçirilir.
 
-## 1. Otomatik Denetimler (Terminal)
-Tüm geliştirme etkileşimleri sisteme gömülü olan `just` komut dizilerinden geçer not almak zorundadır.
+## 🧱 Unit & Integration Tests
 
-- **`just fmt`**: `rustfmt.toml` ve `taplo.toml` kurallarını zorlayarak (maks. 100 karakter satır limiti, özel yorum hizalamaları vb.) tüm Rust ve TOML kodlarının sistemli kod katı sınırlandırmaları dahilinde kalmasını sağlar.
-- **`just lint`**: Arka planda `cargo clippy --all-targets -- -D warnings` komutunu koşar. Sistemde `0` uyarı olması şarttır. `clippy.toml` üzerinde belirlediğimiz bilişsel (cognitive) ve döngüsel (cyclomatic) karmaşıklıklara dair maksimum 30 limit kuralını acımasızca uygular.
-- **`just audit`**: Tüm bağımlılık (dependency) ağaçlarını `cargo deny check` ile analiz ederek projeye "bakımı durdurulmuş, zafiyet barındıran veya lisanstan yoksun" tek bir dış kütüphane düğümünün bile bulaşmamasını garantiler.
-- **`just test`**: Tüm birim (unit) testlerini çalıştırır.
-- **`just ci`**: Son kapı denetleyicisi. Herhangi bir git commit işleminden önce bunu manuel olarak çalıştırın! Prosedürün tamamını bir zincir halinde yürütür (`fmt` -> `lint` -> `audit` -> `test` -> `build`).
+### 1. DNS Resolution Test
+`hickory-resolver`'ın hem sistem DNS'i hem de rotasyon tabanlı özel DNS'ler üzerinden gerçek alan adlarını çözüp çözemediğini doğrular.
+```bash
+cargo test test_real_dns_resolution
+```
 
-## 2. Birim ve Entegrasyon Testleri
-- Testleri inanılmaz derecede optimize şekilde koşmak için `cargo-nextest` kullanıyoruz (`cargo nextest run`).
-- Test konfigürasyonları VS Code özellikleriyle harmanlanmıştır. IDE üzerindeki VS Code görevlerinden (tasks) `Test: All` seçimi doğrudan `cargo nextest` yapısını çalıştırır.
+### 2. Stealth User-Agent Variability
+UA rotasyon havuzunun rastgeleliğini ve varyansını kontrol ederek "Single-U-A" (tek düze) davranış sergilenmediğini onaylar.
+```bash
+cargo test test_random_user_agent_variability
+```
 
-## 3. İnteraktif Web ve UI Testleri
-- Arka uç (backend) ve arayüzler birbiriyle doğrudan bağlı çalıştığından (Kullanıcı arayüzüne (UI) Axum kökenlik eder), sadece `cargo run -- server` emrini vererek geliştirme modunu canlı olarak `localhost:3000` üzerinden ayağa kaldırabilirsiniz.
-- Ön uç (Frontend), sunucudan gelen yanıt bağlantısının çökmesi veya kopması ihtimaline dahi uyum sağlayarak, ekrana sadece boş bir pop-up atmak yerine dinamik fetch API yapısıyla arayüzle bütünleşik hata mesajları (graceful UI errors) sergileyecek şekilde test edilmek üzere kurgulanmıştır.
+### 3. Serialization Checks
+DnsResult veri yapılarının Web API üzerinden JSON formatına hatasız dönüştüğünü doğrular.
+```bash
+cargo test test_dns_result_default
+```
 
-## 4. Hata Ayıklama (Debugging)
-`.vscode/launch.json` içinde kurgulanmış profesyonel LLDB ayarlamalarını kullanın.
-- **Debug: Main Binary** komutu, doğrudan ana Axum API'sini kırılma noktaları (breakpoints) bağlamında duraklatmalı olarak canlandırır.
-- **Debug: Test (by name)** ise tek bir bağımsız algoritmayı (tek bir fonksiyonu) lazer odaklı test edebilmenizi sağlar.
+## 🔍 Code Quality Audit
+
+Projeyi teslim etmeden önce veya CI/CD süreçlerinde aşağıdaki komutları çalıştırırız:
+```bash
+# Format kontrolü
+cargo fmt --check
+
+# Statik analiz ve lint denetimi (warnings as errors)
+cargo clippy --all-targets -- -D warnings
+
+# Tüm test suitini koştur
+cargo test --workspace
+```
+
+## 🌐 End-to-End (E2E) Browser Verification
+
+Web Dashboard testleri için aşağıdaki adımlar takip edilir:
+1. `cargo run -- server --port 3000` komutu ile sunucuyu başlatın.
+2. `http://localhost:3000` adresine gidin.
+3. `scanme.nmap.org` gibi bilinen bir alan adını girin.
+4. "Enumerate Domain" butonuna basarak metriklerin (Subdomains, Ports, Vulns) yüklendiğini doğrulayın.
+5. "Topology Map" sekmesine geçerek grafik çizimini kontrol edin.
+
+## 🛠️ Debugging DNS
+Eğer taramalar 0 sonuç veriyorsa, DNS sorgusunun bloklanıp bloklanmadığını kontrol etmek için:
+- `DEBUG=1 cargo run -- pentest dns yourdomain.com` (Gelecek versiyon loglaması için rezerve edilmiştir).
+- Halihazırda `test_real_dns_resolution` testi bu tanıyı koymaktadır.
