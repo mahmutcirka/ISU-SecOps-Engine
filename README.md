@@ -1,5 +1,5 @@
-# 🛰️ DNS Enumeration v0.5.0
-### *Advanced DNS Scoping & Reconnaissance Platform*
+# 🛰️ DNS Enumeration v0.6.0
+### *Optimized DNS Scoping & Infrastructure Reconnaissance Platform*
 
 ```text
   ____                ___                    _____             _             
@@ -12,8 +12,8 @@
 
 [![Rust](https://img.shields.io/badge/Language-Rust-orange.svg)](https://www.rust-lang.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Production--Ready-success.svg)]()
-[![Security](https://img.shields.io/badge/Security-Stealth--Optimized-brightgreen.svg)]()
+[![Status](https://img.shields.io/badge/Status-Optimized-success.svg)]()
+[![Security](https://img.shields.io/badge/Security-Infrastructure--Focused-brightgreen.svg)]()
 
 [Features](#-key-features) • [Installation](#-installation) • [Architecture](#-architecture) • [Usage](#-usage) • [Legal](#-disclaimer)
 
@@ -21,18 +21,17 @@
 
 ## 🛡️ Introduction
 
-**DNS Enumeration**, siber güvenlik araştırmacıları ve pentest uzmanları için geliştirilmiş; yüksek performanslı, asenkron ve çok katmanlı bir istihbarat toplama aracıdır. Alan adlarını sadece listelemekle kalmaz, aynı zamanda WAF tespiti, S3 sızıntıları, DNS takibi ve port taraması yaparak kapsamlı bir risk haritası oluşturur.
+**DNS Enumeration**, siber güvenlik araştırmacıları ve pentest uzmanları için geliştirilmiş; yüksek performanslı, asenkron ve altyapı odaklı bir keşif aracıdır. Gereksiz web tarama yüklerinden arındırılarak sadece çekirdek DNS kayıtlarına, pasif OSINT verilerine ve hızlı port taramasına odaklanacak şekilde optimize edilmiştir.
 
 ## ✨ Key Features
 
 - 🕵️ **Advanced OSINT:** `crt.sh` entegrasyonu ile pasif subdomain keşfi.
-- ⚡ **Asenkron Port Scanner:** En kritik TCP portlarını milisaniyeler içinde tarayan `tokio` destekli motor.
-- 🎭 **Stealth & Evasion:**
-  - **User-Agent Rotation:** Her istekte değişen tarayıcı kimlikleri.
-  - **DNS Resolver Rotation:** Google, Cloudflare, Quad9 ve OpenDNS arasında otomatik rotasyon. (Sistem DNS'i ile hibrit çalışma desteği).
-  - **Request Jitter:** Bloklanmayı önlemek için ayarlanabilir rastgele gecikmeler.
-- 🪣 **Cloud Leak Detection:** Amazon S3 kova (bucket) sızıntısı ve subdomain takeover (devralma) kontrolleri.
-- 🧱 **Firewall Awareness:** Web Uygulama Güvenlik Duvarı (WAF) tespiti ve güvenlik başlıkları analizi.
+- ⚡ **Turbo Core:** 
+  - **Parallel IP Intel:** Birden fazla IP için RDAP sorgularını eşzamanlı gerçekleştirme.
+  - **Jitter-Free Brute Force:** Subdomain keşfini yavaşlatan suni gecikmeler kaldırıldı.
+- 🚀 **Async Port Scanner:** En kritik TCP portlarını milisaniyeler içinde tarayan `tokio` destekli motor.
+- 🧪 **Security Auditing:** SPF, DMARC ve DKIM kayıtlarını otomatik analiz eder.
+- 🔬 **Zone Transfer (AXFR):** Tüm Name Server'lar üzerinde bölge transferi denemeleri.
 - 📊 **Interactive Dashboard:** `vis-network.js` tabanlı topoloji haritası ve modern "Glassmorphism" UI.
 
 ## 🏗️ Architecture
@@ -46,18 +45,17 @@ graph TD
     API --> CORE
     CORE --> DNS[Stealth DNS Resolver]
     CORE --> SCAN[Async Port Scanner]
-    CORE --> VULN[Vulnerability Modules]
-    VULN --> S3[S3/Takeover Checks]
-    VULN --> WAF[WAF Detection]
+    CORE --> INTEL[Parallel IP Intel]
+    CORE --> OSINT[crt.sh Passive Recon]
     DNS --> Internet((Public DNS/Web))
     SCAN --> Internet
+    INTEL --> Internet
 ```
 
 ## 🛠️ Installation
 
 ### Prerequisites
 - [Rust](https://www.rust-lang.org/tools/install) (latest stable)
-- [Just](https://github.com/casey/just) (optional, for automation tasks)
 
 ### Build from source
 ```bash
@@ -71,16 +69,16 @@ cargo build --release
 ### 💻 Command Line Interface
 ```bash
 # DNS ve Güvenlik taraması yap
-cargo run -- pentest dns example.com
+cargo run --release -- pentest dns example.com
 
 # Özel bir wordlist ile brute-force yap
-cargo run -- pentest dns example.com --wordlist subdomains.txt
+cargo run --release -- pentest dns example.com --wordlist subdomains.txt
 ```
 
 ### 🌐 Web Dashboard (Modern UI)
 ```bash
 # Sunucuyu başlat (Varsayılan Port: 3000)
-cargo run -- server --port 3000
+cargo run --release -- server --port 3000
 ```
 Tarayıcıda `http://localhost:3000` adresine giderek etkileşimli analiz ekranına ulaşabilirsiniz.
 
