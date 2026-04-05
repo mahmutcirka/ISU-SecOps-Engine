@@ -69,6 +69,7 @@ form.addEventListener('submit', async (e) => {
     // UI State
     submitBtn.disabled = true;
     loader.classList.remove('hidden');
+    document.getElementById('loader-text').textContent = "Deep analysis in progress...";
     resultsContainer.classList.add('hidden');
 
     try {
