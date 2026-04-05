@@ -100,19 +100,6 @@ form.addEventListener('submit', async (e) => {
                 let vulnClass = "green";
                 let vulnIcon = "check-circle";
 
-                let criticalVulns = 0;
-                if (data.takeover) data.takeover.forEach(t => { if (t.vulnerable) criticalVulns++; });
-                if (data.s3_buckets) data.s3_buckets.forEach(s => { if (s.is_critical) criticalVulns++; });
-
-                if (criticalVulns > 0) {
-                    vulnRatingText = `${criticalVulns} CRITICAL`;
-                    vulnClass = "red";
-                    vulnIcon = "alert-triangle";
-                }
-
-                let wafStatus = data.waf && !data.waf.includes("No active") ? data.waf : "Not Detected";
-                let wafClass = wafStatus === "Not Detected" ? "green" : "blue";
-
                 dashboardGrid.innerHTML = `
                     <div class="metric-card">
                         <div class="metric-icon purple"><i data-feather="globe"></i></div>
@@ -126,20 +113,6 @@ form.addEventListener('submit', async (e) => {
                         <div class="metric-info">
                             <h4>Open Ports</h4>
                             <div class="value">${pCount}</div>
-                        </div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-icon ${vulnClass}"><i data-feather="${vulnIcon}"></i></div>
-                        <div class="metric-info">
-                            <h4>Web Vulns</h4>
-                            <div class="value">${vulnRatingText}</div>
-                        </div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-icon ${wafClass}"><i data-feather="shield"></i></div>
-                        <div class="metric-info">
-                            <h4>Firewall</h4>
-                            <div class="value" style="font-size: 1.1rem;">${wafStatus}</div>
                         </div>
                     </div>
                 `;
@@ -268,63 +241,6 @@ function renderResults(data) {
         tabIpIntel.innerHTML = intelHtml || `<div class="empty-state">No Intel data acquired.</div>`;
     }
 
-    // 6. Web Vulnerabilities (Phase 2)
-    const tabWebVulns = document.getElementById('tab-webvulns');
-    if (tabWebVulns) {
-        let vulnHtml = '';
-        
-        // WAF
-        if (data.waf) {
-            vulnHtml += `<h4 style="margin-bottom:8px; color:var(--info);">Web Application Firewall</h4>`;
-            let color = data.waf.includes("No active") ? "var(--text-secondary)" : "var(--error)";
-            vulnHtml += `<div class="record-row" style="color:${color};"><i data-feather="shield"></i> ${data.waf}</div>`;
-        }
-
-        // TLS
-        if (data.tls) {
-            vulnHtml += `<h4 style="margin-top:20px; margin-bottom:8px; color:var(--info);">TLS/SSL Baseline</h4>`;
-            let color = data.tls.supported ? "var(--success)" : "var(--error)";
-            vulnHtml += `<div class="record-row" style="color:${color};"><i data-feather="lock"></i> ${data.tls.message}</div>`;
-        }
-
-        // S3 Buckets
-        if (data.s3_buckets && data.s3_buckets.length > 0) {
-            vulnHtml += `<h4 style="margin-top:20px; margin-bottom:8px; color:var(--info);">S3 Cloud Leaks</h4>`;
-            data.s3_buckets.forEach(s3 => {
-                let color = s3.is_critical ? "var(--error)" : "var(--warning)";
-                vulnHtml += `<div class="record-row" style="color:${color}; justify-content:space-between; display:flex;">
-                    <span style="word-break:break-all;">${s3.bucket_url}</span>
-                    <span class="badge ${s3.is_critical ? 'error' : 'warning'}">${s3.status}</span>
-                </div>`;
-            });
-        }
-
-        // Subdomain Takeover
-        if (data.takeover && data.takeover.length > 0) {
-            vulnHtml += `<h4 style="margin-top:20px; margin-bottom:8px; color:var(--info);">Subdomain Takeover (CNAME)</h4>`;
-            data.takeover.forEach(t => {
-                let color = t.vulnerable ? "var(--error)" : "var(--success)";
-                vulnHtml += `<div class="record-row" style="color:${color}; justify-content:space-between; display:flex;">
-                    <span>${t.cname}</span>
-                    <span>${t.status}</span>
-                </div>`;
-            });
-        }
-
-        // Security Headers
-        if (data.headers && data.headers.length > 0) {
-            vulnHtml += `<h4 style="margin-top:20px; margin-bottom:8px; color:var(--info);">Security Headers</h4>`;
-            data.headers.forEach(h => {
-                let color = h.present ? "var(--success)" : "var(--error)";
-                vulnHtml += `<div class="record-row" style="justify-content:space-between; display:flex;">
-                    <span style="color:var(--text-primary);">${h.header}</span>
-                    <span style="color:${color}; font-size:12px;">${h.value}</span>
-                </div>`;
-            });
-        }
-        
-        tabWebVulns.innerHTML = vulnHtml || `<div class="empty-state">No vulnerabilities scanned yet.</div>`;
-    }
 
     // 7. Topology Network Graph (Phase 3)
     let container = document.getElementById('network-graph');
