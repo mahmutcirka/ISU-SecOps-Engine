@@ -49,10 +49,14 @@ Projenin tüm özelliklerini (CLI ve Web Dashboard) içeren kapsamlı demonstras
 ### 🌐 Web Dashboard & Topoloji Haritası
 Modern ve interaktif arayüz üzerinden gerçekleştirilen analiz sürecini izleyebilirsiniz:
 
-![Project Demo Video](demo/project-demo.webp)
+<p align="center">
+  <img src="demo/project-demo.webp" width="100%" alt="Project Demo Video">
+</p>
 
 *Görsel: Analiz sonucu oluşan dinamik ağ topolojisi.*
-![Topology Map](demo/topology-map.png)
+<p align="center">
+  <img src="demo/topology-map.png" width="800" alt="Topology Map">
+</p>
 
 ### 🖥️ Komut Satırı (CLI) Kullanımı
 Aracı terminal üzerinden `release` modunda çalıştırma örneği:
