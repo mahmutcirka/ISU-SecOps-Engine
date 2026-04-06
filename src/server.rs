@@ -26,7 +26,7 @@ pub async fn start(port: u16) {
         .allow_methods(Any)
         .allow_headers(Any);
 
-    // Axum Router yapılandırması: 
+    // Axum Router yapılandırması:
     // - /api/dns/enumerate: Ana tarama endpoint'i.
     // - ServeDir: Frontend (HTML/JS/CSS) dosyalarını sunar.
     // - CORS: Geliştirme aşamasında esneklik sağlamak için 'Any' izinleri verilmiştir.
