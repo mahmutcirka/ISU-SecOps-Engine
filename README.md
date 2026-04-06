@@ -50,7 +50,7 @@ Projenin terminal tabanlı modern çalışma performansını aşağıdan izleyeb
 Aracın `istinye.edu.tr` üzerinde gerçekleştirdiği derin DNS keşfi ve güvenlik analizi performansını aşağıdan izleyebilirsiniz:
 
 <p align="center">
-  <video src="demo/terminal-demo.webp" width="100%" autoplay loop muted playsinline></video>
+  <img src="demo/terminal-demo.webp" width="100%" alt="CLI Terminal Demo Video">
 </p>
 
 ### 💻 Komut Satırı (CLI) Kullanımı
