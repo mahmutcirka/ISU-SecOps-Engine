@@ -44,21 +44,21 @@
 
 ## 🎬 Demo
 
-Projenin tüm özelliklerini (CLI ve Web Dashboard) içeren kapsamlı demonstrasyon aşağıda sunulmuştur.
+Projenin terminal tabanlı modern çalışma performansını aşağıdan izleyebilirsiniz:
 
-### 🌐 Web Dashboard & Topoloji Haritası
-Modern ve interaktif arayüz üzerinden gerçekleştirilen analiz sürecini izleyebilirsiniz:
+### 🖥️ Terminal (CLI) Demo
+Aracın `istinye.edu.tr` üzerinde gerçekleştirdiği derin DNS keşfi ve güvenlik analizi:
 
 <p align="center">
-  <img src="demo/project-demo.webp" width="100%" alt="Project Demo Video">
+  <img src="demo/terminal-demo.webp" width="100%" alt="CLI Terminal Demo Video">
 </p>
 
-*Görsel: Analiz sonucu oluşan dinamik ağ topolojisi.*
+*Görsel: Analiz sonucu oluşan dinamik ağ topolojisi (Dashboard).*
 <p align="center">
   <img src="demo/topology-map.png" width="800" alt="Topology Map">
 </p>
 
-### 🖥️ Komut Satırı (CLI) Kullanımı
+### 💻 Komut Satırı (CLI) Kullanımı
 Aracı terminal üzerinden `release` modunda çalıştırma örneği:
 
 ```bash
