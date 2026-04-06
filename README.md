@@ -23,16 +23,16 @@
 
 ## 📑 İçindekiler
 
-1. [🛡️ Giriş](#️-giriş)
+1. [🛡️ Giriş](#-giriş)
 2. [🎬 Demo](#-demo)
 3. [✨ Temel Özellikler](#-temel-özellikler)
-4. [🏗️ Mimari Yapı](#️-mimari-yapı)
-5. [🛠️ Kurulum](#️-kurulum)
+4. [🏗️ Mimari Yapı](#-mimari-yapı)
+5. [🛠️ Kurulum](#-kurulum)
 6. [🚀 Kullanım](#-kullanım)
-    - [💻 CLI Interface](#-command-line-interface)
-    - [🌐 Web Dashboard](#-web-dashboard-modern-ui)
+   - [💻 CLI Interface](#-command-line-interface)
+   - [🌐 Web Dashboard](#-web-dashboard-modern-ui)
 7. [🔬 Teknik Derinlik & SecOps](#-teknik-derinlik--secops)
-8. [⚖️ Sorumluluk Reddi](#️-disclaimer)
+8. [⚖️ Sorumluluk Reddi](#-sorumluluk-reddi)
 
 ---
 
