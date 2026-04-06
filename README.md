@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://www.istinye.edu.tr/sites/default/files/2025-07/isu_logo_tr-1.svg" width="250" alt="İstinye University Logo">
+  <img src="demo/isu_logo.svg" width="250" alt="İstinye University Logo">
 
   # 🛰️ DNS Enumeration & SecOps Engine v0.6.0
   ### *Advanced DNS Scoping & Infrastructure Reconnaissance*
