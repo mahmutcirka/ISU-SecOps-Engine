@@ -47,15 +47,10 @@
 Projenin terminal tabanlı modern çalışma performansını aşağıdan izleyebilirsiniz:
 
 ### 🖥️ Terminal (CLI) Demo
-Aracın `istinye.edu.tr` üzerinde gerçekleştirdiği derin DNS keşfi ve güvenlik analizi:
+Aracın `istinye.edu.tr` üzerinde gerçekleştirdiği derin DNS keşfi ve güvenlik analizi performansını aşağıdan izleyebilirsiniz:
 
 <p align="center">
   <img src="demo/terminal-demo.webp" width="100%" alt="CLI Terminal Demo Video">
-</p>
-
-*Görsel: Analiz sonucu oluşan dinamik ağ topolojisi (Dashboard).*
-<p align="center">
-  <img src="demo/topology-map.png" width="800" alt="Topology Map">
 </p>
 
 ### 💻 Komut Satırı (CLI) Kullanımı
