@@ -24,20 +24,75 @@
 ## 📑 İçindekiler
 
 1. [🛡️ Giriş](#️-giriş)
-2. [✨ Temel Özellikler](#-temel-özellikler)
-3. [🏗️ Mimari Yapı](#️-mimari-yapı)
-4. [🛠️ Kurulum](#️-kurulum)
-5. [🚀 Kullanım](#-kullanım)
+2. [🎬 Demo](#-demo)
+3. [✨ Temel Özellikler](#-temel-özellikler)
+4. [🏗️ Mimari Yapı](#️-mimari-yapı)
+5. [🛠️ Kurulum](#️-kurulum)
+6. [🚀 Kullanım](#-kullanım)
     - [💻 CLI Interface](#-command-line-interface)
     - [🌐 Web Dashboard](#-web-dashboard-modern-ui)
-6. [🔬 Teknik Derinlik & SecOps](#-teknik-derinlik--secops)
-7. [⚖️ Sorumluluk Reddi](#️-disclaimer)
+7. [🔬 Teknik Derinlik & SecOps](#-teknik-derinlik--secops)
+8. [⚖️ Sorumluluk Reddi](#️-disclaimer)
 
 ---
 
 ## 🛡️ Giriş
 
 **DNS Enumeration**, siber güvenlik araştırmacıları ve sızma testi (pentest) uzmanları için geliştirilmiş; yüksek performanslı, asenkron ve altyapı odaklı bir keşif aracıdır. Gereksiz web tarama yüklerinden arındırılarak sadece çekirdek DNS kayıtlarına, pasif OSINT verilerine ve hızlı port taramasına odaklanacak şekilde optimize edilmiştir.
+
+---
+
+## 🎬 Demo
+
+Projenin tüm özelliklerini (CLI ve Web Dashboard) içeren kapsamlı demonstrasyon aşağıda sunulmuştur.
+
+### 🌐 Web Dashboard & Topoloji Haritası
+Modern ve interaktif arayüz üzerinden gerçekleştirilen analiz sürecini izleyebilirsiniz:
+
+![Project Demo Video](demo/project-demo.webp)
+
+*Görsel: Analiz sonucu oluşan dinamik ağ topolojisi.*
+![Topology Map](demo/topology-map.png)
+
+### 🖥️ Komut Satırı (CLI) Kullanımı
+Aracı terminal üzerinden `release` modunda çalıştırma örneği:
+
+```bash
+# Projeyi derleme
+cargo build --release
+
+# Örnek tarama yürütme
+./target/release/dns-enumeration pentest dns istinye.edu.tr
+```
+
+#### Örnek Çıktı:
+```text
+🔍 Starting discovery phase for: istinye.edu.tr
+✅ Discovery phase completed.
+
+--- [ STANDARD RECORDS ] ---
+A:      194.15.101.244
+MX:     10 mail.istinye.edu.tr.
+NS:     knuth.ihsdns.com.
+NS:     dijkstra.ihsdns.com.
+
+--- [ SECURITY CONTROLS ] ---
+SPF:    v=spf1 include:_spf.google.com include:spf.protection.outlook.com ~all
+DMARC:  v=DMARC1; p=none; sp=none; rua=mailto:dmarc@istinye.edu.tr
+
+--- [ SUBDOMAIN DISCOVERY ] ---
+www.istinye.edu.tr             194.15.101.244
+mail.istinye.edu.tr            194.15.101.231
+vpn.istinye.edu.tr             195.142.216.19
+
+--- [ IP INTELLIGENCE & PORTS ] ---
+IP: 194.15.101.244, ASN/Org: TR-TEAMBILGI, Country: TR
+  [+] Port 21/TCP (FTP) is OPEN
+  [+] Port 80/TCP (HTTP) is OPEN
+  [+] Port 443/TCP (HTTPS) is OPEN
+```
+
+---
 
 ## ✨ Temel Özellikler
 

@@ -45,6 +45,7 @@ pub async fn start(port: u16) {
 
 /// DNS tarama isteğini işleyen ana API handler fonksiyonu.
 async fn handle_enumerate(Json(payload): Json<EnumerateRequest>) -> impl IntoResponse {
+    println!("📡 Received enumeration request for: {}", payload.domain);
     let args = DnsArgs {
         domain: payload.domain.clone(),
         wordlist: payload.wordlist,
