@@ -1,38 +1,41 @@
-# 🏛️ DNS Enumeration: Architecture & Design
+# 🏗️ Proje Mimarisi & Teknik Detaylar
 
-DNS Enumeration, asenkron yapısı ve modüler tasarımı ile yüksek hızda güvenlik taraması yapmak üzere kurgulanmıştır.
+Bu doküman, **ISU-SecOps-Engine** (DNS Enumeration) projesinin arka planındaki mimari kararları, kullanılan teknikleri ve güvenlik yaklaşımlarını detaylandırmaktadır.
 
-## ⚙️ Core Components
+## 1. Asenkron Motor (Tokio & Hickory)
 
-### 🕵️ OSINT & Discovery Layer
-- **crt.sh Entegrasyonu:** Public sertifika şeffaflık loglarını kullanarak pasif subdomain keşfi yapar.
-- **Enumeration Engine:** Dahili wordlist veya kullanıcıdan gelen wordlist ile senkronize brute-force yapar.
+Projenin kalbinde **Rust Tokio** asenkron çalışma zamanı (runtime) bulunmaktadır. Geleneksel senkron tarayıcıların aksine, bu araç her bir DNS sorgusunu ve port bağlantısını ayrı birer "lightweight" task olarak yönetir.
 
-### 🛡️ Stealth Resolver (DNS Rotation)
-Geleneksel tarayıcıların aksine, SecOps Engine her isteği farklı bir nameserver üzerinden geçirir:
-- **Nameservers:** Google (8.8.8.8), Cloudflare (1.1.1.1), Quad9 (9.9.9.9), OpenDNS (208.67.222.222).
-- **Fallback:** Firewall engellerini aşmak için sistemin kendi varsayılan DNS yapılandırması (OS-native) önceliklidir.
-- **Rotate & Jitter:** `hickory-resolver` üzerinden her sorgu rotasyona tabi tutulur ve aralara 10-50ms arası rastgele gecikmeler (jitter) eklenir.
+- **Paralel Çözümleme:** `hickory-resolver` (eski adıyla trust-dns) kullanılarak sistem DNS ayarlarından bağımsız, yüksek performanslı sorgular yapılır.
+- **Konküransi Yönetimi:** `futures::stream::buffer_unordered` kullanılarak ağ kaynaklarını tüketmeden aynı anda yüzlerce sorgu (örn: 100 subdomain bruteforce) gerçekleştirilir.
 
-### ⚡ Port Scanning Engine
-- **Asenkron TCP Scanner:** `tokio` kanalları ve `buffer_unordered` kullanarak aynı anda 20 portu paralel tarar.
-- **Optimized Timeouts:** 2.5 saniyelik dinamik timeout süresi ile bağlantı kararlılığı sağlanır.
+## 2. Modüler Yapı (Separation of Concerns)
 
+Kod tabanı, her bir işlevin kendi sınırları içerisinde kalmasını sağlayan modüler bir mimariye sahiptir:
 
-## 🌐 Web Architecture (Dashboard)
+- **`src/modules/pentest/dns.rs`:** Ana orkestrasyon katmanı.
+- **`src/modules/pentest/port_scanner.rs`:** Düşük seviyeli TCP bağlantı yönetimi.
+- **`src/modules/pentest/osint.rs`:** Harici API entegrasyonu (`crt.sh`).
+- **`src/modules/pentest/whois.rs`:** RDAP protokolü üzerinden bilgi toplama.
 
-- **Backend:** Axum (Rust) tabanlı yüksek performanslı HTTP API.
-- **Frontend:** Vanilla JS & CSS (Glassmorphism design).
-- **Visuals:** `vis-network.js` kullanılarak domain hiyerarşisi (A, AAAA, CNAME, Open Ports) bir topoloji haritasına dönüştürülür.
+## 3. SecOps & Güvenlik Analizi Yaklaşımları
 
-```mermaid
-flowchart LR
-    A[Global Domain] --> B[Subdomains]
-    B --> C[IP Addresses]
-    C --> D[Open Ports]
-    C --> E[IP Intel/Geolocation]
-```
+### E-posta Güvenlik Denetimi
+Araç sadece IP bulmakla kalmaz, hedef alan adının **SPF (Sender Policy Framework)** ve **DMARC** kayıtlarını analiz eder. Bu, organizasyonun "Email Spoofing" saldırılarına karşı ne kadar dirençli olduğunu gösterir.
 
-## 🔐 Security Standards
-- **Zero-Warning Policy:** Kod bazında `clippy` ve `fmt` uyarıları barındırılmaz.
-- **Robustness:** Tüm `async` fonksiyonlar `Send` trait uyumluluğuna sahip olup, timeout ve panic korumalıdır.
+### Zone Transfer (AXFR) Testi
+Eski veya yanlış yapılandırılmış DNS sunucularında hala mümkün olabilen AXFR saldırısını otomatik olarak her Name Server üzerinde dener. Başarılı bir AXFR, tüm iç ağ haritasının saldırganın eline geçmesine neden olabilir.
+
+### Gizlilik (Stealth)
+`src/modules/utils/stealth.rs` modülü, OSINT sorguları sırasında `reqwest` istemcisine rastgele `User-Agent` değerleri atayarak WAF (Web Application Firewall) engellemelerini minimize eder.
+
+## 4. Veri Görselleştirme (Topology Graph)
+
+Frontend tarafında `vis-network.js` kullanılarak, toplanan veriler bir "Hiyerarşik Ağ Grafiği"ne dönüştürülür. Bu sayede:
+- Domain -> Subdomain ilişkisi,
+- Subdomain -> IP ilişkisi,
+- IP -> Açık Port ilişkisi görsel olarak takip edilebilir.
+
+---
+> [!NOTE]
+> Bu proje, modern SecOps ihtiyaçları göz önüne alınarak "hız ve derinlik" dengesiyle geliştirilmiştir.

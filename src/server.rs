@@ -26,13 +26,18 @@ pub async fn start(port: u16) {
         .allow_methods(Any)
         .allow_headers(Any);
 
+    // Axum Router yapılandırması: 
+    // - /api/dns/enumerate: Ana tarama endpoint'i.
+    // - ServeDir: Frontend (HTML/JS/CSS) dosyalarını sunar.
+    // - CORS: Geliştirme aşamasında esneklik sağlamak için 'Any' izinleri verilmiştir.
+    // FIX: Prodüksiyon ortamında CORS kısıtlanmalıdır.
     let app = Router::new()
         .route("/api/dns/enumerate", post(handle_enumerate))
         .fallback_service(ServeDir::new("public"))
         .layer(cors);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
-    println!("API Server running at http://{}", addr);
+    println!("📡 ISU-SecOps API Server running at http://{}", addr);
 
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
