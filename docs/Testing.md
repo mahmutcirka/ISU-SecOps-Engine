@@ -42,7 +42,7 @@ Web Dashboard testleri için aşağıdaki adımlar takip edilir:
 1. `cargo run -- server --port 3000` komutu ile sunucuyu başlatın.
 2. `http://localhost:3000` adresine gidin.
 3. `scanme.nmap.org` gibi bilinen bir alan adını girin.
-4. "Enumerate Domain" butonuna basarak metriklerin (Subdomains, Ports, Vulns) yüklendiğini doğrulayın.
+4. "Enumerate Domain" butonuna basarak metriklerin (Subdomains, Ports) yüklendiğini doğrulayın.
 5. "Topology Map" sekmesine geçerek grafik çizimini kontrol edin.
 
 ## 🛠️ Debugging DNS

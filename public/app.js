@@ -97,9 +97,6 @@ form.addEventListener('submit', async (e) => {
             if (dashboardGrid) {
                 let subCount = data.subdomains ? data.subdomains.length : 0;
                 let pCount = data.open_ports ? data.open_ports.length : 0;
-                let vulnRatingText = "Safe";
-                let vulnClass = "green";
-                let vulnIcon = "check-circle";
 
                 dashboardGrid.innerHTML = `
                     <div class="metric-card">

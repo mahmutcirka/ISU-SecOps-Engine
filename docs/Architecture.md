@@ -18,10 +18,6 @@ Geleneksel tarayıcıların aksine, SecOps Engine her isteği farklı bir namese
 - **Asenkron TCP Scanner:** `tokio` kanalları ve `buffer_unordered` kullanarak aynı anda 20 portu paralel tarar.
 - **Optimized Timeouts:** 2.5 saniyelik dinamik timeout süresi ile bağlantı kararlılığı sağlanır.
 
-### 🧱 Vulnerability Analysis Layer
-- **S3 Bucket Checker:** Varyasyonel `reqwest` istekleri ile "Access Denied" veya "Open" durumlarını raporlar.
-- **CNAME Takeover Engine:** Subdomain devralma zafiyetlerini (gh-pages, s3 vb.) tespit eder.
-- **WAF Detection:** Zararsız fakat yaygın SQLi payloadları ile firewall yanıt paternlerini analiz eder.
 
 ## 🌐 Web Architecture (Dashboard)
 
@@ -35,7 +31,6 @@ flowchart LR
     B --> C[IP Addresses]
     C --> D[Open Ports]
     C --> E[IP Intel/Geolocation]
-    B --> F[Vulnerabilities]
 ```
 
 ## 🔐 Security Standards
